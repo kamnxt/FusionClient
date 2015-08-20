@@ -104,6 +104,7 @@ private:
 
     QGraphicsScene* sceneCover;
     QGraphicsPixmapItem* itemCover;
+    QPropertyAnimation* menuAnim;
 };
 
 #endif // MAINWINDOW_H

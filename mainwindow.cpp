@@ -31,6 +31,7 @@ MainWindow::MainWindow(QWidget *parent) :
     cUpdater->writeVersion(FCVersion, QDir::currentPath() + "/FVersionL");
     qDebug() << "Creating FVersion file for Linux.";
 #endif
+
     if(!db.init())
     {
         QMessageBox msg(QMessageBox::Warning, "Error!", "Couldn't init the DB. Things may not work correctly. If this happened after an update, please submit a bug report.", QMessageBox::Ok, this);
@@ -137,6 +138,8 @@ MainWindow::MainWindow(QWidget *parent) :
     resizeHeightEnabled = false;
     resizeWidthEnabled = false;
     resizeWidthEnabledInv =false;
+
+    menuAnim = new QPropertyAnimation(settingsMenu, "pos", this);
 }
 
 
@@ -346,8 +349,16 @@ void MainWindow::ShowSettingsContextMenu(const QPoint &pos)
        globalPos.setY(globalPos.y() - settingsMenu->height());
        globalPos.setX(globalPos.x() - settingsMenu->width() - 20);
 
+       //delete menuAnim;
+       menuAnim = new QPropertyAnimation(settingsMenu, "pos", this);
+       menuAnim->setStartValue(QPoint(-settingsMenu->width(),-settingsMenu->height()));
+       menuAnim->setEndValue(globalPos);
+       qDebug() << menuAnim->endValue() << menuAnim->startValue();
+       menuAnim->setDuration(500);
+       menuAnim->setEasingCurve(QEasingCurve::OutCubic);
+       settingsMenu->exec(QPoint(-settingsMenu->width(),-settingsMenu->height()));
+       menuAnim->start(QAbstractAnimation::DeleteWhenStopped);
 
-       settingsMenu->exec(globalPos);
 }
 
 void MainWindow::on_launcherSet(FLauncher launcher)
